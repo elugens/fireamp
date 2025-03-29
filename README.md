@@ -1,14 +1,6 @@
-# Turborepo Tailwind CSS starter
+# FireAmp - Turborepo with Tailwind and shadcn/ui
 
-This Turborepo starter is maintained by the Turborepo core team.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest -e with-tailwind
-```
+This project is built using Turborepo with Tailwind CSS and shadcn/ui integration for consistent, beautiful UI components across multiple applications.
 
 ## What's inside?
 
@@ -16,43 +8,97 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
+- `web`: Main [Next.js](https://nextjs.org/) application with [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/)
+- `docs`: Documentation [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
+- `ui`: A shared React component library with [shadcn/ui](https://ui.shadcn.com/) components used by both `web` and `docs` applications
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `@repo/tailwind-config`: Shared Tailwind CSS configuration
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-### Building packages/ui
+## Getting Started
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+### Prerequisites
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+- [Node.js](https://nodejs.org/en/) (v18 or newer)
+- [pnpm](https://pnpm.io/) (v8.15.6 or newer)
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+### Installation
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/fireamp.git
+cd fireamp
 
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
+# Install dependencies
+pnpm install
 ```
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+### Development
 
-### Utilities
+```bash
+# Start the development server for all apps
+pnpm dev
 
-This Turborepo has some additional tools already setup for you:
+# Start a specific app
+pnpm --filter web dev
+pnpm --filter docs dev
+```
+
+### Build
+
+```bash
+# Build all apps and packages
+pnpm build
+
+# Build a specific app
+pnpm --filter web build
+```
+
+## Architecture
+
+This project uses a monorepo structure powered by [Turborepo](https://turbo.build/) with the following key features:
+
+- **Shared UI Components**: All UI components are centralized in the `ui` package using shadcn/ui
+- **Consistent Styling**: Shared Tailwind configuration ensures consistent styling across apps
+- **Type Safety**: Comprehensive TypeScript configurations for maximum type safety
+- **Fast Builds**: Turborepo's caching speeds up builds by avoiding redundant work
+
+## shadcn/ui Integration
+
+This project uses [shadcn/ui](https://ui.shadcn.com/) for its component library. shadcn/ui provides high-quality, customizable React components built on Radix UI primitives.
+
+Key features of our shadcn/ui integration:
+
+- **Centralized Components**: All shadcn/ui components are maintained in the `ui` package
+- **ES Module Support**: The UI package uses ES Modules with proper `.js` extension handling
+- **Consistent Theming**: Shared color schemes and design tokens across all applications
+- **Customizability**: Components can be customized at the application level when needed
+
+For detailed information about the shadcn/ui integration, see [turbo-shad-setup.md](./turbo-shad-setup.md).
+
+## Authentication
+
+FireAmp uses [Supabase](https://supabase.com/) for authentication with the following features:
+
+- **Session Management**: Proper handling of authentication sessions across page loads
+- **Protected Routes**: Middleware-based protection for authenticated routes
+- **Environment-Specific Clients**: Separate Supabase clients for server and browser environments
+
+## Troubleshooting
+
+If you encounter issues with the shadcn/ui integration, refer to [troubleshooting-shadcn-ui-integration.md](./troubleshooting-shadcn-ui-integration.md) for common solutions.
+
+## Utilities
+
+This Turborepo has some additional tools already set up for you:
 
 - [Tailwind CSS](https://tailwindcss.com/) for styles
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
+
+## License
+
+MIT
