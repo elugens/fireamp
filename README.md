@@ -1,6 +1,6 @@
-# FireAmp - Turborepo with Tailwind and shadcn/ui
+# FireAmp - Turborepo with Tailwind and shadcn/ui - 03/25/2025
 
-This project is built using Turborepo with Tailwind CSS and shadcn/ui integration for consistent, beautiful UI components across multiple applications.
+This project is built using Turborepo  with Tailwind CSS and shadcn/ui integration for consistent, beautiful UI components across multiple applications.
 
 ## What's inside?
 
