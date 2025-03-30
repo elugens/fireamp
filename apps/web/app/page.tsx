@@ -1,6 +1,10 @@
 import Image from "next/image";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
+
+import { ScreenShare } from 'lucide-react';
+
 
 function Gradient({
   conic,
@@ -46,10 +50,11 @@ const LINKS = [
 
 export default function Page() {
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen p-24 bg-white">
-      <Button variant="default">Button</Button>
-      <Button variant="outline">Button</Button>
-      <Button variant="secondary">Button</Button>
+    <main className="flex flex-col items-center min-h-screen p-24 bg-white">
+      <Button variant="default" size="lg" className="mb-4">Button</Button>
+      <Button variant="destructive" size="sm" className="mb-4">Button</Button>
+      <Button variant="secondary" size="icon" className="mb-4"><ScreenShare /></Button>
+      <Input type="email" placeholder="Email" />
     </main>
   );
 }
