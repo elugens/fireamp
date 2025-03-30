@@ -1,13 +1,13 @@
 # Turborepo with shadcn/ui Integration Guide
 
-This document provides a comprehensive overview of how shadcn/ui is integrated into this Turborepo monorepo structure, explaining the architecture, configuration, and best practices.
+This document provides a comprehensive overview of how shadcn/ui is integrated into this Turborepo monorepo structure, explaining the architecture, configuration, and best practices for Next.js 15+ and React 19.
 
 ## Architecture Overview
 
 This project uses a Turborepo monorepo structure with the following key components:
 
-- **Apps**: Next.js applications that consume shared UI components
-  - `web`: Main Next.js application
+- **Apps**: Next.js 15+ applications that consume shared UI components
+  - `web`: Main Next.js application with Turbopack support
   - `docs`: Documentation site built with Next.js
 
 - **Packages**: Shared libraries and configurations
@@ -26,12 +26,12 @@ This project uses a Turborepo monorepo structure with the following key componen
    ```json
    {
      "$schema": "https://ui.shadcn.com/schema.json",
-     "style": "default",
+     "style": "new-york",
      "rsc": true,
      "tsx": true,
      "tailwind": {
-       "config": "tailwind.config.ts",
-       "css": "app/globals.css",
+       "config": "../../packages/ui/tailwind.config.ts",
+       "css": "../../packages/ui/src/styles.css",
        "baseColor": "zinc",
        "cssVariables": true
      },
@@ -40,7 +40,7 @@ This project uses a Turborepo monorepo structure with the following key componen
        "components": "@/components",
        "hooks": "@/hooks",
        "lib": "@/lib",
-       "utils": "@repo/ui/src/lib/utils",
+       "utils": "@repo/ui/lib/utils",
        "ui": "@repo/ui/components"
      }
    }
@@ -73,7 +73,7 @@ This project uses a Turborepo monorepo structure with the following key componen
 
 ### ES Modules Configuration
 
-The UI package uses ES Modules (`"type": "module"` in package.json), which affects how imports and exports work:
+The UI package uses ES Modules (`"type": "module"` in package.json), which is standard for Next.js 15+ and React 19 projects. This affects how imports and exports work:
 
 1. **JS Extension in Imports**: 
    In `packages/ui/src/index.ts`, components and utilities are imported with `.js` extensions:
@@ -116,8 +116,26 @@ packages/ui/
    - Apps import these styles with `import "@repo/ui/styles.css"`
 
 2. **TypeScript Compilation**:
-   - Next.js apps directly consume the TypeScript components using `transpilePackages` in `next.config.ts`
+   - Next.js 15+ apps directly consume the TypeScript components
    - This approach simplifies sharing one `tailwind.config.ts` across apps and packages
+
+## Turbopack Integration
+
+Next.js 15+ includes Turbopack, a Rust-based successor to Webpack, which provides significantly faster development experience:
+
+1. **Configuration**:
+   In `apps/web/package.json`, the dev script is configured to use Turbopack:
+   ```json
+   "scripts": {
+     "dev": "next dev --port 3000 --turbopack"
+   }
+   ```
+
+2. **Benefits**:
+   - Faster refresh times
+   - Improved caching
+   - Better error reporting
+   - Optimized for monorepo structures
 
 ## Import Patterns
 
@@ -136,6 +154,25 @@ packages/ui/
    import { cn } from "@repo/ui/lib/utils";
    ```
 
+## React 19 Compatibility
+
+This project uses React 19, which includes several improvements and new features:
+
+1. **Configuration**:
+   All apps and packages use React 19:
+   ```json
+   "dependencies": {
+     "react": "^19.0.0",
+     "react-dom": "^19.0.0"
+   }
+   ```
+
+2. **Benefits**:
+   - Improved performance
+   - Enhanced developer experience
+   - Better type safety
+   - New hooks and features
+
 ## Common Issues and Solutions
 
 1. **Module Resolution Errors**:
@@ -150,6 +187,10 @@ packages/ui/
 3. **Type Errors**:
    - Ensure TypeScript configurations are consistent across packages
    - Use proper path aliases in tsconfig.json files
+
+4. **Turbopack Issues**:
+   - Check for compatibility with installed packages
+   - Ensure Next.js configuration is optimized for Turbopack
 
 ## Best Practices
 
@@ -175,7 +216,10 @@ To add a new shadcn/ui component:
 1. Navigate to your app directory: `cd apps/web`
 2. Use the shadcn/ui CLI to add a component: `npx shadcn-ui@latest add [component-name]`
 3. Move the generated component to the UI package: `packages/ui/src/components/`
-4. Update the UI package's index.ts to export the new component
+4. Update the UI package's index.ts to export the new component with `.js` extension:
+   ```typescript
+   export * from "./components/new-component.js";
+   ```
 5. Update any import paths in the component to use relative paths
 
-By following this structure, you maintain a clean separation between shared UI components and application-specific code while leveraging the power of shadcn/ui and Turborepo.
+By following this structure, you maintain a clean separation between shared UI components and application-specific code while leveraging the power of shadcn/ui, Turborepo, Next.js 15+, and React 19.

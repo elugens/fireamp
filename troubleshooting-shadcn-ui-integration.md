@@ -1,8 +1,8 @@
 # Troubleshooting Shadcn UI Integration in Turborepo
 
-This guide provides solutions for common issues encountered when integrating Shadcn UI into a Turborepo monorepo structure.
+This guide provides solutions for common issues encountered when integrating Shadcn UI into a Turborepo monorepo structure with Next.js 15+ and React 19.
 
-## Problem: Cannot find module '@repo/ui/src/utils' or its corresponding type declarations
+## Problem: Cannot find module '@repo/ui/lib/utils' or its corresponding type declarations
 
 This error typically occurs when there's a path resolution issue between your UI components and utility functions in a shared UI package. The error indicates that TypeScript cannot locate the module specified in the import statement.
 
@@ -19,16 +19,16 @@ This error typically occurs when there's a path resolution issue between your UI
 
 If you see an error like:
 ```
-Cannot find module '@repo/ui/src/utils' or its corresponding type declarations
+Cannot find module '@repo/ui/lib/utils' or its corresponding type declarations
 ```
 
 Change the import statement in your component file (e.g., `button.tsx`) from:
 
 ```tsx
-import { cn } from "@repo/ui/src/utils"
+import { cn } from "@repo/ui/lib/utils"
 ```
 
-To a relative path:
+To a relative path within the UI package:
 
 ```tsx
 import { cn } from "../lib/utils"
@@ -38,15 +38,15 @@ Make sure the path correctly points to the utils file relative to the component'
 
 #### 2. Create an Index File for Centralized Exports
 
-Create or update `packages/ui/src/index.ts` to export all components and utilities:
+Create or update `packages/ui/src/index.ts` to export all components and utilities with `.js` extensions (required for ES modules):
 
 ```typescript
 // Export components
-export * from "./components/button";
+export * from "./components/button.js";
 // Add other component exports here
 
 // Export utilities
-export * from "./lib/utils";
+export * from "./lib/utils.js";
 ```
 
 #### 3. Update Package.json Exports
@@ -62,6 +62,7 @@ Ensure your UI package's `package.json` correctly exports all necessary paths:
   "./styles.css": "./dist/index.css",
   "./lib/utils": "./src/lib/utils.ts",
   "./components/*": "./src/components/*.tsx",
+  "./postcss.config.js": "./postcss.config.js",
   "./*": "./src/*.tsx"
 }
 ```
@@ -91,13 +92,13 @@ cd packages/ui
 pnpm run build
 ```
 
-## Problem: PostCSS Configuration Issues
+## Problem: PostCSS Configuration Issues with Next.js 15+
 
-If you encounter errors related to PostCSS configuration when using Shadcn UI in a Turborepo:
+If you encounter errors related to PostCSS configuration when using Shadcn UI in a Turborepo with Next.js 15+:
 
 ### ES Modules vs CommonJS Issues
 
-If your project uses ES modules (`"type": "module"` in package.json) but your PostCSS config uses CommonJS syntax:
+With Next.js 15+ and React 19, ES modules are the standard. If your project uses ES modules (`"type": "module"` in package.json):
 
 #### For ES Module Projects:
 
@@ -118,7 +119,7 @@ export default {
 };
 ```
 
-#### For CommonJS Projects:
+#### For CommonJS Projects (Legacy):
 
 1. Update `apps/web/postcss.config.js`:
 ```javascript
@@ -135,21 +136,64 @@ module.exports = {
 };
 ```
 
-3. Make sure the UI package exports the postcss.config.js file in package.json:
+## Problem: Turbopack Compatibility Issues
+
+If you encounter issues with Turbopack in development mode:
+
+### Solution:
+
+1. Make sure your Next.js config is properly set up for Turbopack:
+
+```typescript
+// apps/web/next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+};
+
+export default nextConfig;
+```
+
+2. Ensure your package.json script uses the Turbopack flag:
+
 ```json
-"exports": {
-  // other exports...
-  "./postcss.config.js": "./postcss.config.js"
+"scripts": {
+  "dev": "next dev --port 3000 --turbopack"
 }
 ```
 
-## Best Practices for Shadcn UI in Turborepo
+## Problem: React 19 Compatibility Issues
 
-1. **Use consistent module systems** across your packages (either all ES modules or all CommonJS)
-2. **Keep utility functions in a dedicated lib directory** for better organization
-3. **Use a centralized index.ts file** to export all components and utilities
-4. **Properly configure exports in package.json** to ensure all files are accessible
-5. **Use relative imports within the UI package** to avoid path resolution issues
-6. **Import from the package root in applications** (e.g., `import { Button } from "@repo/ui"`)
+If you encounter compatibility issues with React 19:
 
-By following these guidelines, you can avoid common issues when integrating Shadcn UI into a Turborepo project.
+### Solution:
+
+1. Ensure all React-related packages are updated to compatible versions:
+
+```json
+"dependencies": {
+  "react": "^19.0.0",
+  "react-dom": "^19.0.0"
+}
+```
+
+2. Update any component libraries that might not be compatible with React 19
+
+## Best Practices for Shadcn UI in Turborepo with Next.js 15+
+
+1. **Use ES modules consistently** across your packages (`"type": "module"` in package.json)
+2. **Use .js extensions in imports** within index.ts files even for TypeScript files
+3. **Keep utility functions in a dedicated lib directory** for better organization
+4. **Use a centralized index.ts file** to export all components and utilities
+5. **Properly configure exports in package.json** to ensure all files are accessible
+6. **Use relative imports within the UI package** to avoid path resolution issues
+7. **Import from the package root in applications** (e.g., `import { Button } from "@repo/ui"`)
+8. **Configure components.json correctly** with proper paths to Tailwind config and CSS files
+
+By following these guidelines, you can avoid common issues when integrating Shadcn UI into a Turborepo project with Next.js 15+ and React 19.

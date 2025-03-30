@@ -1,6 +1,6 @@
-# FireAmp - Turborepo with Tailwind and shadcn/ui - 03/25/2025
+# FireAmp - Turborepo with Tailwind and shadcn/ui - 03/30/2025
 
-This project is built using Turborepo  with Tailwind CSS and shadcn/ui integration for consistent, beautiful UI components across multiple applications.
+This project is built using Turborepo with Tailwind CSS and shadcn/ui integration for consistent, beautiful UI components across multiple applications.
 
 ## What's inside?
 
@@ -21,7 +21,7 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) (v18 or newer)
+- [Node.js](https://nodejs.org/en/) (v18 or newer, v22 recommended)
 - [pnpm](https://pnpm.io/) (v8.15.6 or newer)
 
 ### Installation
@@ -46,6 +46,15 @@ pnpm --filter web dev
 pnpm --filter docs dev
 ```
 
+#### Using Turbopack (Next.js 15+)
+
+The web application is configured to use Turbopack for faster development:
+
+```bash
+# The web app uses Turbopack by default
+pnpm --filter web dev
+```
+
 ### Build
 
 ```bash
@@ -64,6 +73,7 @@ This project uses a monorepo structure powered by [Turborepo](https://turbo.buil
 - **Consistent Styling**: Shared Tailwind configuration ensures consistent styling across apps
 - **Type Safety**: Comprehensive TypeScript configurations for maximum type safety
 - **Fast Builds**: Turborepo's caching speeds up builds by avoiding redundant work
+- **Modern React**: Uses React 19 with the latest features and improvements
 
 ## shadcn/ui Integration
 
@@ -74,6 +84,7 @@ Key features of our shadcn/ui integration:
 - **Centralized Components**: All shadcn/ui components are maintained in the `ui` package
 - **ES Module Support**: The UI package uses ES Modules with proper `.js` extension handling
 - **Consistent Theming**: Shared color schemes and design tokens across all applications
+- **New York Style**: Uses the "new-york" style variant for components
 - **Customizability**: Components can be customized at the application level when needed
 
 For detailed information about the shadcn/ui integration, see [turbo-shad-setup.md](./turbo-shad-setup.md).
